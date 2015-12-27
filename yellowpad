@@ -115,7 +115,7 @@ class Yellowpad(tk.Tk):
     def create(self):
         ''' Creates a pad. '''
         val = self.widgets['en_add'].get()
-        if val and not re.match('^\s+$', val):
+        if val and not re.match(r'^\s+$', val):
             pad = Pad(self.widgets['fr_pads'], val)
             pad.pack(fill=tk.X, expand=True)
             self.pads.append(pad)
