@@ -5,10 +5,10 @@
 import Tkinter as tk
 import ttk
 
-# TODO: Make it so it is possible to scroll the message window if there are to
-# many messages to be shown in one window.
-# TODO: Store data to a flat file or create an sqlite database. flat text file
-# best.
+# TODO: Make it so that when the message frame fills up and there are more than
+# can be seen at once. Create a scrollwindow.
+# TODO: The data has to be stored somewhere. Create a flat file with a
+# structure of some kind.
 
 
 class Yellowpad(tk.Tk):
@@ -18,6 +18,9 @@ class Yellowpad(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
         self.title("Yellow Pad")
+
+        # Needed to create a Tkinter wrapper around the method to make them
+        # work as intended.
         self.chp = self.register(self.checkpads)
         self.add = self.register(self.addpad)
 
