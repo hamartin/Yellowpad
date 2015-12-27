@@ -24,6 +24,7 @@ class Yellowpad(tk.Tk):
         # work as intended.
         self.chp = self.register(self.checkpads)
         self.add = self.register(self.addpad)
+        self.cre = self.register(self.create)
 
         self.gui = ttk.Style()
         self.widgets = {}
@@ -76,7 +77,7 @@ class Yellowpad(tk.Tk):
                                       style='Yellow.TFrame')
         wid['bu_create'] = ttk.Button(wid['fr_controls'], text='Create',
                                       style='Yellow.TButton',
-                                      command=self.create)
+                                      command=self.cre)
         wid['fr_messages'] = ttk.Frame(wid['fr_main'], style='Yellow.TFrame',
                                        padding=(0, 100, 100, 100))
         wid['fr_messages'].pack(side=tk.LEFT, expand=True, fill=tk.X)
@@ -93,7 +94,7 @@ class Yellowpad(tk.Tk):
         if not self.widgets['en_add'].winfo_ismapped():
             self.widgets['en_add'].pack()
             self.widgets['en_add'].focus()
-            self.widgets['en_add'].bind('<Return>', self.create)
+            self.widgets['en_add'].bind('<Return>', self.cre)
             self.widgets['fr_spacer2'].pack()
             self.widgets['bu_create'].pack()
         else:
@@ -111,7 +112,7 @@ class Yellowpad(tk.Tk):
              and self.widgets['fr_pads'].winfo_ismapped()):
             self.widgets['fr_pads'].pack_forget()
 
-    def create(self, event=None):
+    def create(self):
         ''' Creates a pad. '''
         val = self.widgets['en_add'].get()
         if val and not re.match('^\s+$', val):
