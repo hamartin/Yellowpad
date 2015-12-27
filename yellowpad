@@ -2,6 +2,7 @@
 
 ''' A simple Tkinter yellow pad. '''
 
+import re
 import Tkinter as tk
 import ttk
 
@@ -113,13 +114,13 @@ class Yellowpad(tk.Tk):
     def create(self, event=None):
         ''' Creates a pad. '''
         val = self.widgets['en_add'].get()
-        if val:
+        if val and not re.match('^\s+$', val):
             pad = Pad(self.widgets['fr_pads'], val)
             pad.pack(fill=tk.X, expand=True)
-            self.widgets['en_add'].delete(0, tk.END)
             self.pads.append(pad)
             self.checkpads()
         self.widgets['en_add'].focus()
+        self.widgets['en_add'].delete(0, tk.END)
 
 
 class Pad(ttk.Frame):
