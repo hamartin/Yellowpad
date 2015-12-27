@@ -6,6 +6,11 @@
 import Tkinter as tk
 import ttk
 
+# TODO: Make it so it is possible to scroll the message window if there are to
+# many messages to be shown in one window.
+# TODO: Store data to a flat file or create an sqlite database. flat text file
+# best.
+
 
 class Yellowpad(tk.Tk):
 
@@ -13,6 +18,7 @@ class Yellowpad(tk.Tk):
 
     def __init__(self):
         tk.Tk.__init__(self)
+        self.title("Yellow Pad")
         self.chp = self.register(self.checkpads)
         self.add = self.register(self.addpad)
 
@@ -53,6 +59,9 @@ class Yellowpad(tk.Tk):
         wid['bu_quit'] = ttk.Button(wid['fr_controls'], text='Quit',
                                     command=self.quit, style='Yellow.TButton')
         wid['bu_quit'].pack()
+        wid['fr_spacer4'] = ttk.Frame(wid['fr_controls'], height=40,
+                                      style='Yellow.TFrame')
+        wid['fr_spacer4'].pack()
         wid['bu_add'] = ttk.Button(wid['fr_controls'], text='Add',
                                    command=self.add, style='Yellow.TButton')
         wid['bu_add'].pack()
@@ -108,7 +117,7 @@ class Yellowpad(tk.Tk):
             self.widgets['en_add'].delete(0, tk.END)
             self.pads.append(pad)
             self.checkpads()
-            self.widgets['en_add'].focus()
+        self.widgets['en_add'].focus()
 
 
 class Pad(ttk.Frame):
