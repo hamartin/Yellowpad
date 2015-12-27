@@ -1,0 +1,143 @@
+#!/usr/bin/env python
+# -*- coding: latin-1 -*-
+
+''' A simple Tkinter yellow pad. '''
+
+import Tkinter as tk
+import ttk
+
+
+class Yellowpad(tk.Tk):
+
+    ''' A simple Tkinter yellow pad. '''
+
+    def __init__(self):
+        tk.Tk.__init__(self)
+        self.chp = self.register(self.checkpads)
+        self.add = self.register(self.addpad)
+
+        self.gui = ttk.Style()
+        self.widgets = {}
+        self.pads = []
+
+        self._init_styling()
+        self._init_widgets()
+
+    def _init_styling(self):
+        ''' Initializes styling. '''
+        gui = self.gui
+        col1 = 'yellow'
+        col2 = 'yellow2'
+
+        # Buttons
+        gui.configure('Yellow.TButton', padding=5, background=col1)
+        gui.configure('Yellow2.TButton', padding=5, background=col2)
+        # Frames
+        gui.configure('Yellow.TFrame', padding=5, background=col1)
+        gui.configure('Yellow2.TFrame', padding=5, background=col2)
+        # Labels
+        gui.configure('Yellow.TLabel', padding=5, background=col1)
+        gui.configure('Yellow2.TLabel', padding=5, background=col2)
+        # Entries
+        gui.configure('Yellow.TEntry', padding=5, background=col1)
+
+    def _init_widgets(self):
+        ''' Initializes widgets. '''
+        wid = self.widgets
+
+        wid['fr_main'] = ttk.Frame(self, style='Yellow.TFrame')
+        wid['fr_main'].pack(expand=True, fill=tk.BOTH)
+        wid['fr_controls'] = ttk.Frame(wid['fr_main'], style='Yellow.TFrame',
+                                       padding=100)
+        wid['fr_controls'].pack(side=tk.LEFT)
+        wid['bu_quit'] = ttk.Button(wid['fr_controls'], text='Quit',
+                                    command=self.quit, style='Yellow.TButton')
+        wid['bu_quit'].pack()
+        wid['bu_add'] = ttk.Button(wid['fr_controls'], text='Add',
+                                   command=self.add, style='Yellow.TButton')
+        wid['bu_add'].pack()
+        wid['fr_spacer1'] = ttk.Frame(wid['fr_controls'], height=20,
+                                      style='Yellow.TFrame')
+        wid['fr_spacer1'].pack()
+        wid['en_add'] = ttk.Entry(wid['fr_controls'], style='Yellow.TEntry')
+        wid['fr_spacer2'] = ttk.Frame(wid['fr_controls'], height=20,
+                                      style='Yellow.TFrame')
+        wid['bu_create'] = ttk.Button(wid['fr_controls'], text='Create',
+                                      style='Yellow.TButton',
+                                      command=self.create)
+        wid['fr_messages'] = ttk.Frame(wid['fr_main'], style='Yellow.TFrame',
+                                       padding=(0, 100, 100, 100))
+        wid['fr_messages'].pack(side=tk.LEFT, expand=True, fill=tk.X)
+
+        # Pads
+        wid['fr_pads'] = ttk.Frame(wid['fr_messages'], style='Yellow2.TFrame',
+                                   padding=10)
+        wid['fr_pads'].bind('<Enter>', self.chp)
+        wid['fr_pads'].bind('<Leave>', self.chp)
+        wid['fr_pads'].pack(expand=True, fill=tk.X)
+
+    def addpad(self):
+        ''' Opens an entry so the user can add a pad. '''
+        if not self.widgets['en_add'].winfo_ismapped():
+            self.widgets['en_add'].pack()
+            self.widgets['en_add'].focus()
+            self.widgets['en_add'].bind('<Return>', self.create)
+            self.widgets['fr_spacer2'].pack()
+            self.widgets['bu_create'].pack()
+        else:
+            self.widgets['bu_create'].pack_forget()
+            self.widgets['fr_spacer2'].pack_forget()
+            self.widgets['en_add'].pack_forget()
+            self.widgets['en_add'].delete(0, tk.END)
+
+    def checkpads(self):
+        ''' Checks if there are any pads, if not, then forget the frame. '''
+        if(self.widgets['fr_pads'].winfo_children()
+           and not self.widgets['fr_pads'].winfo_ismapped()):
+            self.widgets['fr_pads'].pack()
+        elif(not self.widgets['fr_pads'].winfo_children()
+             and self.widgets['fr_pads'].winfo_ismapped()):
+            self.widgets['fr_pads'].pack_forget()
+
+    def create(self, event=None):
+        ''' Creates a pad. '''
+        val = self.widgets['en_add'].get()
+        if val:
+            pad = Pad(self.widgets['fr_pads'], val)
+            pad.pack(fill=tk.X, expand=True)
+            self.widgets['en_add'].delete(0, tk.END)
+            self.pads.append(pad)
+            self.checkpads()
+            self.widgets['en_add'].focus()
+
+
+class Pad(ttk.Frame):
+
+    ''' A Frame that contains pads and its controllers. '''
+
+    def __init__(self, master=None, message=None):
+        ttk.Frame.__init__(self, master, style='Yellow2.TFrame')
+        self.expa = self.register(self.expand)
+        self.dele = self.register(self.destroy)
+
+        self.message = ttk.Label(self, text=message, style='Yellow2.TLabel')
+        self.message.bind('<Button-1>', self.expa)
+        self.message.pack(expand=True, fill=tk.X)
+
+        self.fr_control = ttk.Frame(self, style='Yellow2.TFrame')
+        self.bu_delete = ttk.Button(self.fr_control, text='Delete',
+                                    command=self.dele, style='Yellow2.TButton')
+        self.bu_delete.pack()
+
+    def expand(self):
+        ''' Expands or hides the controlls. '''
+        if self.fr_control.winfo_ismapped():
+            self.fr_control.pack_forget()
+        else:
+            self.fr_control.pack(expand=True, fill=tk.X)
+
+
+if __name__ == '__main__':
+
+    WIN = Yellowpad()
+    WIN.mainloop()
